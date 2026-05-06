@@ -169,10 +169,12 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
     <div class="app-title">SUNFLOW</div>
   </div>
   <div class="header-right">
-    <span class="save-dot" id="save-dot-hdr" title="Estado guardado"></span>
+    <span class="save-dot" id="save-dot-hdr"></span>
+    <span style="font-size:11px;color:var(--text3);" id="save-txt-hdr">Cargando...</span>
     <label class="btn btn-sm" style="cursor:pointer;">📂 Cargar<input type="file" accept=".json" onchange="loadState(event)" style="display:none;"></label>
-    <button class="btn btn-sm" onclick="saveState()">💾 Guardar</button>
-    <button class="btn btn-primary" onclick="openNewVessel()">+ Nuevo buque</button>
+    <button class="btn btn-sm" onclick="saveState()">💾 Backup</button>
+    <button class="btn btn-primary" id="btn-publish" onclick="publishToGitHub()">🌐 Publicar</button>
+    <button class="btn btn-sm" style="border-color:var(--green-dim);color:var(--green);" onclick="openNewVessel()">+ Buque</button>
   </div>
 </header>
 
@@ -228,13 +230,114 @@ function dayLabel(dt){ return DOW[dt.getDay()]+' '+dt.getDate()+'/'+(dt.getMonth
 let vessels = [], activeIdx = null, dirty = false;
 
 // ── PERSISTENCIA ──────────────────────────────────────────────────────
-function markDirty(){ dirty=true; const d=document.getElementById('save-dot-hdr'); if(d){d.className='save-dot dirty';} }
-function markClean(){ dirty=false; const d=document.getElementById('save-dot-hdr'); if(d){d.className='save-dot';} }
+const GITHUB_TOKEN = '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';
+const GITHUB_REPO  = 'sovoilar/SUNFLOW-';
+const GITHUB_FILE  = 'index.html';
+const LS_KEY       = 'sunflow_state';
+
+function markDirty(){
+  dirty=true;
+  const d=document.getElementById('save-dot-hdr'); if(d){d.className='save-dot dirty';}
+  const t=document.getElementById('save-txt-hdr'); if(t){t.textContent='Cambios sin publicar';}
+  autoSaveLocal();
+}
+function markClean(){
+  dirty=false;
+  const d=document.getElementById('save-dot-hdr'); if(d){d.className='save-dot';}
+  const t=document.getElementById('save-txt-hdr'); if(t){t.textContent='Publicado ✓';}
+}
+
+function autoSaveLocal(){
+  try{
+    const data=vessels.map(v=>({...v,etb:v.etb.toISOString(),cupos:v.cupos.map(c=>({...c,date:c.date.toISOString()}))}));
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+  }catch(e){}
+}
+
+function loadFromLocal(){
+  try{
+    const raw=localStorage.getItem(LS_KEY);
+    if(!raw) return false;
+    const data=JSON.parse(raw);
+    vessels=data.map(v=>({...v,etb:new Date(v.etb),cupos:v.cupos.map(c=>({...c,date:new Date(c.date)}))}));
+    activeIdx=0; return true;
+  }catch(e){ return false; }
+}
+
+async function publishToGitHub(){
+  const btn=document.getElementById('btn-publish');
+  btn.textContent='Publicando...'; btn.disabled=true;
+  try{
+    // 1. Obtener SHA del archivo actual
+    const meta = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`,{
+      headers:{'Authorization':'token '+GITHUB_TOKEN,'Accept':'application/vnd.github.v3+json'}
+    });
+    const metaJson = await meta.json();
+    const sha = metaJson.sha;
+
+    // 2. Leer el HTML actual de la página y actualizar el estado embebido
+    const res = await fetch(window.location.href);
+    let currentHtml = await res.text();
+
+    // 3. Serializar estado actual
+    const stateData = vessels.map(v=>({...v,etb:v.etb.toISOString(),cupos:v.cupos.map(c=>({...c,date:c.date.toISOString()}))}));
+    const stateJson = JSON.stringify(stateData);
+
+    // 4. Reemplazar el bloque initDefault con los datos actuales
+    const newInitBlock = buildInitBlock(stateData);
+    const initRegex = /function initDefault\(\)\{[\s\S]*?vessels\.push\(v\);activeIdx=0;\s*\}/;
+    if(initRegex.test(currentHtml)){
+      currentHtml = currentHtml.replace(initRegex, newInitBlock);
+    }
+
+    // 5. Subir a GitHub
+    const content = btoa(unescape(encodeURIComponent(currentHtml)));
+    const push = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`,{
+      method:'PUT',
+      headers:{'Authorization':'token '+GITHUB_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+      body: JSON.stringify({message:'SUNFLOW update '+new Date().toISOString().slice(0,16),content,sha})
+    });
+    if(push.ok){ markClean(); alert('✅ Publicado correctamente en sovoilar.github.io/SUNFLOW-/'); }
+    else { throw new Error(await push.text()); }
+  }catch(err){
+    alert('❌ Error al publicar: '+err.message);
+  }
+  btn.textContent='🌐 Publicar'; btn.disabled=false;
+}
+
+function buildInitBlock(data){
+  const v=data[0];
+  const cuposJs = v.cupos.map(c=>`    {sc:${c.camSFS_conf||0},hc:${c.camHO_conf||0},sp:${c.camSFS_proy||0},hp:${c.camHO_proy||0},ot:${c.outTurnos||0},or_:${c.outReal||0},tpt:${c.tonPorTurno||2500},dom:${c.sinOp?'true':'false'},etb:${c.esETB?'true':'false'},lbl:'${c.label}'}`).join(',\n');
+  return `function initDefault(){
+  const etb=makeDate(2026,4,9);
+  const v={id:${v.id},nombre:'${v.nombre}',puerto:'${v.puerto}',
+    sfsObj:${v.sfsObj},hoObj:${v.hoObj},sfsIni:${v.sfsIni},hoIni:${v.hoIni},etb,tonPorTurno:${v.tonPorTurno},cupos:[]};
+  const dd=[
+${cuposJs}
+  ];
+  dd.forEach((d,i)=>{
+    const dt=new Date(d.lbl.includes('5/5')?makeDate(2026,4,5):
+              d.lbl.includes('6/5')?makeDate(2026,4,6):
+              d.lbl.includes('7/5')?makeDate(2026,4,7):
+              d.lbl.includes('8/5')?makeDate(2026,4,8):
+              d.lbl.includes('9/5')?makeDate(2026,4,9):
+              d.lbl.includes('10/5')?makeDate(2026,4,10):
+              d.lbl.includes('11/5')?makeDate(2026,4,11):
+              d.lbl.includes('12/5')?makeDate(2026,4,12):
+              d.lbl.includes('13/5')?makeDate(2026,4,13):makeDate(2026,4,14));
+    v.cupos.push({date:dt,label:d.lbl,
+      camSFS_conf:d.sc,camHO_conf:d.hc,camSFS_proy:d.sp,camHO_proy:d.hp,
+      outTurnos:d.ot,outReal:d.or_,tonPorTurno:d.tpt,sinOp:d.dom,esETB:d.etb});
+  });
+  vessels.push(v);activeIdx=0;
+}`;
+}
 
 function saveState(){
-  const data = vessels.map(v=>({...v, etb:v.etb.toISOString(), cupos:v.cupos.map(c=>({...c,date:c.date.toISOString()}))}));
-  const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  autoSaveLocal();
+  const data=vessels.map(v=>({...v,etb:v.etb.toISOString(),cupos:v.cupos.map(c=>({...c,date:c.date.toISOString()}))}));
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download='sunflow_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
   markClean();
 }
@@ -246,7 +349,7 @@ function loadState(e){
     try{
       const data=JSON.parse(ev.target.result);
       vessels=data.map(v=>({...v,etb:new Date(v.etb),cupos:v.cupos.map(c=>({...c,date:new Date(c.date)}))}));
-      activeIdx=0; markClean(); render();
+      activeIdx=0; markClean(); autoSaveLocal(); render();
     }catch(err){alert('Error al cargar archivo');}
   };
   reader.readAsText(file);
@@ -623,7 +726,10 @@ function initDefault(){
   });
   vessels.push(v);activeIdx=0;
 }
-initDefault();render();
+if(!loadFromLocal()){ initDefault(); }
+render();
+// Marcar estado inicial
+setTimeout(()=>{ const t=document.getElementById('save-txt-hdr'); if(t&&!dirty)t.textContent='Guardado localmente'; },100);
 </script>
 </body>
 </html>
