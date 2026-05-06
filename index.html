@@ -593,27 +593,33 @@ function createVessel(){
 // ── INIT ──────────────────────────────────────────────────────────────
 function initDefault(){
   const etb=makeDate(2026,4,9);
-  const v={id:Date.now(),nombre:'MV CL CONTIGO',puerto:'Terminal Las Palmas',
+  const v={id:1778033726462,nombre:'MV CL CONTIGO',puerto:'Terminal Las Palmas',
     sfsObj:16300,hoObj:4600,sfsIni:8800,hoIni:3290,etb,tonPorTurno:2500,cupos:[]};
-  const start=makeDate(2026,4,5);
   const dd=[
-    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,dom:false},
-    {sc:40,hc:25,sp:0,hp:0,ot:0,or_:0,dom:false},
-    {sc:35,hc:0,sp:0,hp:0,ot:0,or_:0,dom:false},
-    {sc:0,hc:0,sp:46,hp:11,ot:0,or_:0,dom:false},
-    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,dom:false},
-    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,dom:true},
-    {sc:0,hc:0,sp:46,hp:10,ot:2,or_:0,dom:false},
-    {sc:0,hc:0,sp:46,hp:0,ot:2,or_:0,dom:false},
-    {sc:0,hc:0,sp:46,hp:0,ot:2,or_:0,dom:false},
-    {sc:0,hc:0,sp:0,hp:0,ot:-1,or_:0,dom:false},
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Mar 5/5'},
+    {sc:40,hc:25,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Mié 6/5'},
+    {sc:35,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Jue 7/5'},
+    {sc:0,hc:0,sp:46,hp:11,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Vie 8/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:true,lbl:'Sáb 9/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:true,etb:false,lbl:'Dom 10/5'},
+    {sc:0,hc:0,sp:46,hp:10,ot:3,or_:0,tpt:7,dom:false,etb:false,lbl:'Lun 11/5'},
+    {sc:0,hc:0,sp:51,hp:0,ot:3,or_:0,tpt:4,dom:false,etb:false,lbl:'Mar 12/5'},
+    {sc:0,hc:0,sp:46,hp:0,ot:3,or_:0,tpt:6,dom:false,etb:false,lbl:'Mié 13/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:-1,or_:0,tpt:6,dom:false,etb:false,lbl:'Jue 14/5'}
   ];
   dd.forEach((d,i)=>{
-    const dt=new Date(start);dt.setDate(start.getDate()+i);
-    const dow=dt.getDay();
-    v.cupos.push({date:new Date(dt),label:dayLabel(dt),
+    const dt=new Date(d.lbl.includes('5/5')?makeDate(2026,4,5):
+              d.lbl.includes('6/5')?makeDate(2026,4,6):
+              d.lbl.includes('7/5')?makeDate(2026,4,7):
+              d.lbl.includes('8/5')?makeDate(2026,4,8):
+              d.lbl.includes('9/5')?makeDate(2026,4,9):
+              d.lbl.includes('10/5')?makeDate(2026,4,10):
+              d.lbl.includes('11/5')?makeDate(2026,4,11):
+              d.lbl.includes('12/5')?makeDate(2026,4,12):
+              d.lbl.includes('13/5')?makeDate(2026,4,13):makeDate(2026,4,14));
+    v.cupos.push({date:dt,label:d.lbl,
       camSFS_conf:d.sc,camHO_conf:d.hc,camSFS_proy:d.sp,camHO_proy:d.hp,
-      outTurnos:d.ot,outReal:d.or_,tonPorTurno:2500,sinOp:d.dom,esETB:dt.toDateString()===etb.toDateString()});
+      outTurnos:d.ot,outReal:d.or_,tonPorTurno:d.tpt,sinOp:d.dom,esETB:d.etb});
   });
   vessels.push(v);activeIdx=0;
 }
