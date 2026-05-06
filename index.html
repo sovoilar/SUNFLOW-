@@ -160,7 +160,7 @@ body.input-active{overflow:hidden;}
 body.input-active .main{overflow-y:scroll;}
 </style>
 </head>
-<body class="input-active">
+<body class="">
 
 <header class="app-header">
   <div class="logo-wrap">
@@ -235,13 +235,13 @@ body.input-active .main{overflow-y:scroll;}
       <div class="kpi-val" style="font-size:20px;">722</div>
       <div class="kpi-sub">stock + conf + proy · obj: 721 cam</div>
     </div>
-    <div class="kpi white"><div class="kpi-label">ETC estimado</div><div class="kpi-val" style="font-size:16px;margin-top:4px;">Mié 13/5</div><div class="kpi-sub">9 turnos · 2.500 t/turno</div></div>
+    <div class="kpi white"><div class="kpi-label">ETC estimado</div><div class="kpi-val" style="font-size:16px;margin-top:4px;">Mié 13/5</div><div class="kpi-sub">7 turnos · 3.000 t/turno</div></div>
   </div>
 
   <div class="etc-banner">
     <div>
       <div class="etc-title">⚓ ETC: Mié 13/5</div>
-      <div class="etc-detail">20.900 tons totales · 9 turnos de 2.500 t · ritmo 2 turnos/día</div>
+      <div class="etc-detail">20.900 tons totales · 7 turnos de 3.000 t · ritmo 2 turnos/día</div>
     </div>
     <span class="etc-badge">SFS 16.300 t · HO 4.600 t</span>
   </div>
@@ -263,7 +263,7 @@ body.input-active .main{overflow-y:scroll;}
     <div class="config-grid">
       <div class="config-item">
         <span class="config-label">Tons por turno (default)</span>
-        <input class="config-input" type="number" value="2500" onchange="updateVessel(0,'tonPorTurno',this.value)" placeholder="2500">
+        <input class="config-input" type="number" value="3000" onchange="updateVessel(0,'tonPorTurno',this.value)" placeholder="2500">
       </div>
       <div class="config-item">
         <span class="config-label">SFS objetivo total (tons)</span>
@@ -333,7 +333,7 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camHO_proy',this.value)"></td>
       <td class="">—</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>8.800</td>
@@ -348,7 +348,7 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camHO_proy',this.value)"></td>
       <td class="in-v">1.885</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>9.960</td>
@@ -363,7 +363,7 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camHO_proy',this.value)"></td>
       <td class="in-v">1.015</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>10.975</td>
@@ -375,15 +375,15 @@ body.input-active .main{overflow-y:scroll;}
       <td><span class="chip chip-proy">Proyectado</span></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camSFS_conf',this.value)"></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camHO_conf',this.value)"></td>
-      <td><input class="inp-proy" type="number" min="0" value="40" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="46" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="11" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camHO_proy',this.value)"></td>
-      <td class="in-v">1.479</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td class="in-v">1.653</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
-      <td>12.135</td>
+      <td>12.309</td>
       <td>4.334</td>
-      <td style="font-weight:500;">16.469</td>
+      <td style="font-weight:500;">16.643</td>
       <td class="" style="font-weight:500;">0 / 20.900</td>
     </tr><tr class="">
       <td>Sáb 9/5 ⚓</td>
@@ -393,12 +393,12 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="20" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camHO_proy',this.value)"></td>
       <td class="in-v">580</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
-      <td>12.715</td>
+      <td>12.889</td>
       <td>4.334</td>
-      <td style="font-weight:500;">17.049</td>
+      <td style="font-weight:500;">17.223</td>
       <td class="" style="font-weight:500;">0 / 20.900</td>
     </tr><tr class="row-sinop">
       <td>Dom 10/5</td>
@@ -408,53 +408,53 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camSFS_proy',this.value)" disabled=""></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camHO_proy',this.value)" disabled=""></td>
       <td class="">—</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'tonPorTurno',this.value)" disabled="" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'tonPorTurno',this.value)" disabled="" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'outTurnos',this.value)" disabled=""></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'outReal',this.value)" disabled="" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
-      <td>12.715</td>
+      <td>12.889</td>
       <td>4.334</td>
-      <td style="font-weight:500;">17.049</td>
+      <td style="font-weight:500;">17.223</td>
       <td class="" style="font-weight:500;">0 / 20.900</td>
     </tr><tr class="">
       <td>Lun 11/5</td>
       <td><span class="chip chip-proy">Proyectado</span></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camSFS_conf',this.value)"></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camHO_conf',this.value)"></td>
-      <td><input class="inp-proy" type="number" min="0" value="50" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="46" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="10" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camHO_proy',this.value)"></td>
-      <td class="in-v">1.740</td>
-      <td><input class="inp-out" type="number" min="0" value="3000" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
-      <td><input class="inp-out" type="number" min="0" value="2" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'outTurnos',this.value)"></td>
+      <td class="in-v">1.624</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="3" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
-      <td>9.636</td>
-      <td>3.153</td>
-      <td style="font-weight:500;">12.789</td>
-      <td class="" style="font-weight:500;">6.000 / 20.900</td>
+      <td>7.422</td>
+      <td>2.425</td>
+      <td style="font-weight:500;">9.847</td>
+      <td class="" style="font-weight:500;">9.000 / 20.900</td>
     </tr><tr class="">
       <td>Mar 12/5</td>
       <td><span class="chip chip-proy">Proyectado</span></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camSFS_conf',this.value)"></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camHO_conf',this.value)"></td>
-      <td><input class="inp-proy" type="number" min="0" value="50" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="51" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camHO_proy',this.value)"></td>
-      <td class="in-v">1.450</td>
-      <td><input class="inp-out" type="number" min="0" value="3000" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td class="in-v">1.479</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="3" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
-      <td>4.067</td>
-      <td>1.172</td>
-      <td style="font-weight:500;">5.239</td>
-      <td class="" style="font-weight:500;">15.000 / 20.900</td>
+      <td>1.813</td>
+      <td>513</td>
+      <td style="font-weight:500;">2.326</td>
+      <td class="" style="font-weight:500;">18.000 / 20.900</td>
     </tr><tr class="row-etc">
       <td>Mié 13/5</td>
       <td><span class="chip chip-etc">ETC ✓</span></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camSFS_conf',this.value)"></td>
       <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camHO_conf',this.value)"></td>
-      <td><input class="inp-proy" type="number" min="0" value="24" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="21" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camHO_proy',this.value)"></td>
-      <td class="in-v">696</td>
-      <td><input class="inp-out" type="number" min="0" value="3000" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
-      <td><input class="inp-out" type="number" min="0" value="2" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'outTurnos',this.value)"></td>
+      <td class="in-v">609</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="1" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>11</td>
       <td>24</td>
@@ -468,7 +468,7 @@ body.input-active .main{overflow-y:scroll;}
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camSFS_proy',this.value)"></td>
       <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camHO_proy',this.value)"></td>
       <td class="">—</td>
-      <td><input class="inp-out" type="number" min="0" value="" placeholder="2500" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'outTurnos',this.value)"></td>
       <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>11</td>
