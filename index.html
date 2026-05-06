@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
+<html lang="es"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SUNFLOW · Sovoilar</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=Syne:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#0a0f0d;--surface:#111813;--surface2:#18211b;--surface3:#1f2b22;
@@ -158,9 +156,11 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
 ::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:99px;}
+body.input-active{overflow:hidden;}
+body.input-active .main{overflow-y:scroll;}
 </style>
 </head>
-<body>
+<body class="">
 
 <header class="app-header">
   <div class="logo-wrap">
@@ -169,8 +169,8 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
     <div class="app-title">SUNFLOW</div>
   </div>
   <div class="header-right">
-    <span class="save-dot" id="save-dot-hdr"></span>
-    <span style="font-size:11px;color:var(--text3);" id="save-txt-hdr">Cargando...</span>
+    <span class="save-dot dirty" id="save-dot-hdr"></span>
+    <span style="font-size:11px;color:var(--text3);" id="save-txt-hdr">Guardado localmente</span>
     <label class="btn btn-sm" style="cursor:pointer;">📂 Cargar<input type="file" accept=".json" onchange="loadState(event)" style="display:none;"></label>
     <button class="btn btn-sm" onclick="saveState()">💾 Backup</button>
     <button class="btn btn-primary" id="btn-publish" onclick="publishToGitHub()">📤 Exportar y publicar</button>
@@ -182,7 +182,9 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
   <aside class="sidebar">
     <div class="sidebar-top">
       <div class="sidebar-label">Operaciones</div>
-      <div id="vessel-list"></div>
+      <div id="vessel-list"><div class="vessel-item active"><div class="vessel-name">MV CL CONTIGO</div>
+      <div class="vessel-sub">Terminal Las Palmas · 100% cargado</div>
+      <div class="vessel-bar"><div class="vessel-fill" style="width:100%"></div></div></div></div>
     </div>
     <div class="sidebar-footer">
       <button class="btn" style="width:100%;font-size:11px;" onclick="openNewVessel()">+ Agregar buque</button>
@@ -190,13 +192,304 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
   </aside>
 
   <main class="main">
-    <div class="empty" id="empty-state">
+    <div class="empty" id="empty-state" style="display: none;">
       <div class="empty-icon">⚓</div>
       <div class="empty-title">Sin operaciones activas</div>
       <div style="margin-bottom:20px;font-size:13px;">Creá tu primer buque para comenzar</div>
       <button class="btn btn-primary" onclick="openNewVessel()">+ Nuevo buque</button>
     </div>
-    <div id="vessel-detail" style="display:none;"></div>
+    <div id="vessel-detail" style="display: block;">
+  <div class="save-bar">
+    <span class="save-dot" id="save-dot-main"></span>
+    <span class="save-hint">Todo guardado</span>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi green"><div class="kpi-label">Cargado SFS</div><div class="kpi-val">16.300</div><div class="kpi-sub">de 16.300 t · 100%</div></div>
+    <div class="kpi blue"><div class="kpi-label">Cargado HO</div><div class="kpi-val">4.600</div><div class="kpi-sub">de 4.600 t · 100%</div></div>
+    <div class="kpi amber">
+      <div class="kpi-label">Camiones cupeados</div>
+      <div class="kpi-val">305</div>
+      <div class="kpi-sub">Conf: 100 · Proy: 205</div>
+    </div>
+    </div>
+    <!-- segunda fila KPIs -->
+    <div class="kpi-grid" style="margin-top:-2px;">
+    <div class="kpi" style="border-color:rgba(61,214,140,0.2);">
+      <div class="kpi-label">Equiv. stock SFS</div>
+      <div class="kpi-val" style="color:var(--green);font-size:20px;">303</div>
+      <div class="kpi-sub">camiones · 8.800 t en puerto</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(91,163,245,0.2);">
+      <div class="kpi-label">Equiv. stock HO</div>
+      <div class="kpi-val" style="color:var(--blue);font-size:20px;">113</div>
+      <div class="kpi-sub">camiones · 3.290 t en puerto</div>
+    </div>
+    <div class="kpi" style="border-color:rgba(245,197,66,0.2);">
+      <div class="kpi-label">Stock total equiv.</div>
+      <div class="kpi-val" style="color:var(--amber);font-size:20px;">417</div>
+      <div class="kpi-sub">camiones · 12.090 t · 58% del objetivo</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Total camiones equiv.</div>
+      <div class="kpi-val" style="font-size:20px;">722</div>
+      <div class="kpi-sub">stock + conf + proy · obj: 721 cam</div>
+    </div>
+    <div class="kpi white"><div class="kpi-label">ETC estimado</div><div class="kpi-val" style="font-size:16px;margin-top:4px;">Mié 13/5</div><div class="kpi-sub">7 turnos · 3.000 t/turno</div></div>
+  </div>
+
+  <div class="etc-banner">
+    <div>
+      <div class="etc-title">⚓ ETC: Mié 13/5</div>
+      <div class="etc-detail">20.900 tons totales · 7 turnos de 3.000 t · ritmo 2 turnos/día</div>
+    </div>
+    <span class="etc-badge">SFS 16.300 t · HO 4.600 t</span>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-row">
+      <div class="prog-hdr"><span class="prog-name">SFS — Girasol común</span><span class="prog-nums">16.300 / 16.300 t · falta 0 t</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:100%;background:var(--green);"></div></div>
+    </div>
+    <div class="prog-row">
+      <div class="prog-hdr"><span class="prog-name">HO — Alto oleico</span><span class="prog-nums">4.600 / 4.600 t · falta 0 t</span></div>
+      <div class="prog-track"><div class="prog-fill" style="width:100%;background:var(--blue);"></div></div>
+    </div>
+  </div>
+
+  <!-- PARÁMETROS EDITABLES -->
+  <div class="config-panel">
+    <div class="config-title">⚙ Parámetros de la operación</div>
+    <div class="config-grid">
+      <div class="config-item">
+        <span class="config-label">Tons por turno (default)</span>
+        <input class="config-input" type="number" value="3000" onchange="updateVessel(0,'tonPorTurno',this.value)" placeholder="2500">
+      </div>
+      <div class="config-item">
+        <span class="config-label">SFS objetivo total (tons)</span>
+        <input class="config-input" type="number" value="16300" onchange="updateVessel(0,'sfsObj',this.value)">
+      </div>
+      <div class="config-item">
+        <span class="config-label">HO objetivo total (tons)</span>
+        <input class="config-input" type="number" value="4600" onchange="updateVessel(0,'hoObj',this.value)">
+      </div>
+      <div class="config-item">
+        <span class="config-label">Stock inicial SFS (tons)</span>
+        <input class="config-input" type="number" value="8800" onchange="updateVessel(0,'sfsIni',this.value)">
+      </div>
+      <div class="config-item">
+        <span class="config-label">Stock inicial HO (tons)</span>
+        <input class="config-input" type="number" value="3290" onchange="updateVessel(0,'hoIni',this.value)">
+      </div>
+      <div class="config-item">
+        <span class="config-label">Puerto / Terminal</span>
+        <input class="config-input" type="text" value="Terminal Las Palmas" onchange="updateVesselStr(0,'puerto',this.value)">
+      </div>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <span>Celdas editables:</span>
+    <span class="leg"><span class="leg-box" style="background:rgba(61,214,140,0.09);border-color:rgba(61,214,140,0.25);"></span><span style="color:var(--green);">Verde = confirmados (cupos acordados)</span></span>
+    <span class="leg"><span class="leg-box" style="background:rgba(245,197,66,0.08);border-color:rgba(245,197,66,0.2);"></span><span style="color:var(--amber);">Naranja = proyectados</span></span>
+    <span class="leg"><span class="leg-box" style="background:var(--blue-pale);border-color:rgba(91,163,245,0.2);"></span><span style="color:var(--blue);">Azul = carga buque (turnos proj. / tons reales)</span></span>
+    <span style="margin-left:auto;color:var(--text3);">Camión ≈ 29 t</span>
+  </div>
+
+  <div class="table-wrap"><table>
+    <thead>
+      <tr class="th-grp">
+        <th class="th-grp" style="text-align:left;padding-left:14px;">FECHA</th>
+        <th class="th-grp">ESTADO</th>
+        <th class="th-grp" colspan="2" style="color:var(--green);text-align:center;">▲ IN CONFIRMADOS</th>
+        <th class="th-grp" colspan="2" style="color:var(--amber);text-align:center;">▲ IN PROYECTADOS</th>
+        <th class="th-grp" style="color:var(--green);">IN TOTAL</th>
+        <th class="th-grp" colspan="3" style="color:var(--blue);text-align:center;">▼ OUT EMBARQUE</th>
+        <th class="th-grp" colspan="3" style="text-align:center;">STOCK PUERTO</th>
+        <th class="th-grp">EMBARCADO</th>
+      </tr>
+      <tr>
+        <th style="text-align:left;padding-left:14px;">Fecha</th>
+        <th>Estado</th>
+        <th style="color:var(--green);">Cam SFS conf</th>
+        <th style="color:var(--green);">Cam HO conf</th>
+        <th style="color:var(--amber);">Cam SFS proy</th>
+        <th style="color:var(--amber);">Cam HO proy</th>
+        <th style="color:var(--green);">IN (tons)</th>
+        <th style="color:var(--blue);">T/turno real</th>
+        <th style="color:var(--blue);">Turnos</th>
+        <th style="color:var(--blue);">OUT (tons)</th>
+        <th>SFS</th>
+        <th>HO</th>
+        <th>Total</th>
+        <th>Acumulado</th>
+      </tr>
+    </thead>
+    <tbody><tr class="">
+      <td>Mar 5/5</td>
+      <td><span class="chip chip-hoy">Hoy</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'camHO_proy',this.value)"></td>
+      <td class="">—</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,0,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>8.800</td>
+      <td>3.290</td>
+      <td style="font-weight:500;">12.090</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="">
+      <td>Mié 6/5</td>
+      <td><span class="chip chip-conf">Confirmado</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="40" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="25" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'camHO_proy',this.value)"></td>
+      <td class="in-v">1.885</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,1,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>9.960</td>
+      <td>4.015</td>
+      <td style="font-weight:500;">13.975</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="">
+      <td>Jue 7/5</td>
+      <td><span class="chip chip-conf">Confirmado</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="35" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'camHO_proy',this.value)"></td>
+      <td class="in-v">1.015</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,2,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>10.975</td>
+      <td>4.015</td>
+      <td style="font-weight:500;">14.990</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="">
+      <td>Vie 8/5</td>
+      <td><span class="chip chip-proy">Proyectado</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="46" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="11" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'camHO_proy',this.value)"></td>
+      <td class="in-v">1.653</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,3,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>12.309</td>
+      <td>4.334</td>
+      <td style="font-weight:500;">16.643</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="">
+      <td>Sáb 9/5 ⚓</td>
+      <td><span class="chip chip-sinop">—</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'camHO_proy',this.value)"></td>
+      <td class="">—</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,4,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>12.309</td>
+      <td>4.334</td>
+      <td style="font-weight:500;">16.643</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="row-sinop">
+      <td>Dom 10/5</td>
+      <td><span class="chip chip-sinop">Sin op.</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camSFS_conf',this.value)" disabled=""></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camHO_conf',this.value)" disabled=""></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camSFS_proy',this.value)" disabled=""></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'camHO_proy',this.value)" disabled=""></td>
+      <td class="">—</td>
+      <td><input class="inp-out" type="number" min="0" value="2500" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'tonPorTurno',this.value)" disabled="" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'outTurnos',this.value)" disabled=""></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,5,'outReal',this.value)" disabled="" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>12.309</td>
+      <td>4.334</td>
+      <td style="font-weight:500;">16.643</td>
+      <td class="" style="font-weight:500;">0 / 20.900</td>
+    </tr><tr class="">
+      <td>Lun 11/5</td>
+      <td><span class="chip chip-proy">Proyectado</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="100" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="10" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'camHO_proy',this.value)"></td>
+      <td class="in-v">3.190</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="3" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,6,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>8.299</td>
+      <td>2.534</td>
+      <td style="font-weight:500;">10.833</td>
+      <td class="" style="font-weight:500;">9.000 / 20.900</td>
+    </tr><tr class="">
+      <td>Mar 12/5</td>
+      <td><span class="chip chip-proy">Proyectado</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="38" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'camHO_proy',this.value)"></td>
+      <td class="in-v">1.102</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="3" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,7,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>2.299</td>
+      <td>636</td>
+      <td style="font-weight:500;">2.935</td>
+      <td class="" style="font-weight:500;">18.000 / 20.900</td>
+    </tr><tr class="row-etc">
+      <td>Mié 13/5</td>
+      <td><span class="chip chip-etc">ETC ✓</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'camHO_proy',this.value)"></td>
+      <td class="">—</td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="1" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,8,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>11</td>
+      <td>24</td>
+      <td style="font-weight:500;">35</td>
+      <td class="in-v" style="font-weight:500;">20.900 / 20.900</td>
+    </tr><tr class="">
+      <td>Jue 14/5</td>
+      <td><span class="chip chip-sinop">—</span></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camSFS_conf',this.value)"></td>
+      <td><input class="inp-conf" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camHO_conf',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camSFS_proy',this.value)"></td>
+      <td><input class="inp-proy" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'camHO_proy',this.value)"></td>
+      <td class="">—</td>
+      <td><input class="inp-out" type="number" min="0" value="6" placeholder="3000" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'tonPorTurno',this.value)" title="Tons reales por turno este día"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="0" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'outTurnos',this.value)"></td>
+      <td><input class="inp-out" type="number" min="0" value="" placeholder="calc" onkeydown="event.stopPropagation();" onchange="upCupo(0,9,'outReal',this.value)" title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+      <td>11</td>
+      <td>24</td>
+      <td style="font-weight:500;">35</td>
+      <td class="in-v" style="font-weight:500;">20.900 / 20.900</td>
+    </tr><tr class="row-total">
+    <td>TOTALES</td><td></td>
+    <td class="in-v">75</td><td class="in-v">25</td>
+    <td class="proy-v">184</td><td class="proy-v">21</td>
+    <td class="in-v">8.845</td>
+    <td></td><td></td>
+    <td class="out-v">20.900</td>
+    <td></td><td></td><td></td>
+    <td class="in-v">20.900 / 20.900</td>
+  </tr></tbody></table></div>
+  <div style="display:flex;gap:8px;align-items:center;padding-bottom:20px;">
+    <button class="btn btn-sm" onclick="addDay(0)">+ Agregar día</button>
+    <button class="btn btn-sm btn-red" onclick="removeLastDay(0)">− Quitar último</button>
+    <span style="font-size:11px;color:var(--text3);margin-left:4px;">Col. "T/turno real": sobreescribí el default día a día · Col. "OUT tons": ingresá el real embarcado</span>
+  </div></div>
   </main>
 </div>
 
@@ -304,10 +597,19 @@ function buildInitBlock(data){
   const cuposJs = v.cupos.map(c=>`    {sc:${c.camSFS_conf||0},hc:${c.camHO_conf||0},sp:${c.camSFS_proy||0},hp:${c.camHO_proy||0},ot:${c.outTurnos||0},or_:${c.outReal||0},tpt:${c.tonPorTurno||2500},dom:${c.sinOp?'true':'false'},etb:${c.esETB?'true':'false'},lbl:'${c.label}'}`).join(',\n');
   return `function initDefault(){
   const etb=makeDate(2026,4,9);
-  const v={id:${v.id},nombre:'${v.nombre}',puerto:'${v.puerto}',
-    sfsObj:${v.sfsObj},hoObj:${v.hoObj},sfsIni:${v.sfsIni},hoIni:${v.hoIni},etb,tonPorTurno:${v.tonPorTurno},cupos:[]};
+  const v={id:1778033726462,nombre:'MV CL CONTIGO',puerto:'Terminal Las Palmas',
+    sfsObj:16300,hoObj:4600,sfsIni:8800,hoIni:3290,etb,tonPorTurno:3000,cupos:[]};
   const dd=[
-${cuposJs}
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Mar 5/5'},
+    {sc:40,hc:25,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Mié 6/5'},
+    {sc:35,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Jue 7/5'},
+    {sc:0,hc:0,sp:46,hp:11,ot:0,or_:0,tpt:2500,dom:false,etb:false,lbl:'Vie 8/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:false,etb:true,lbl:'Sáb 9/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:0,or_:0,tpt:2500,dom:true,etb:false,lbl:'Dom 10/5'},
+    {sc:0,hc:0,sp:100,hp:10,ot:3,or_:0,tpt:3000,dom:false,etb:false,lbl:'Lun 11/5'},
+    {sc:0,hc:0,sp:38,hp:0,ot:3,or_:0,tpt:3000,dom:false,etb:false,lbl:'Mar 12/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:1,or_:0,tpt:3000,dom:false,etb:false,lbl:'Mié 13/5'},
+    {sc:0,hc:0,sp:0,hp:0,ot:-1,or_:0,tpt:6,dom:false,etb:false,lbl:'Jue 14/5'}
   ];
   dd.forEach((d,i)=>{
     const dt=new Date(d.lbl.includes('5/5')?makeDate(2026,4,5):
@@ -494,32 +796,32 @@ function renderMain(){
       <div class="config-item">
         <span class="config-label">Tons por turno (default)</span>
         <input class="config-input" type="number" value="${v.tonPorTurno}"
-          oninput="updateVessel(${activeIdx},'tonPorTurno',this.value)" placeholder="2500">
+          onchange="updateVessel(${activeIdx},'tonPorTurno',this.value)" placeholder="2500">
       </div>
       <div class="config-item">
         <span class="config-label">SFS objetivo total (tons)</span>
         <input class="config-input" type="number" value="${v.sfsObj}"
-          oninput="updateVessel(${activeIdx},'sfsObj',this.value)">
+          onchange="updateVessel(${activeIdx},'sfsObj',this.value)">
       </div>
       <div class="config-item">
         <span class="config-label">HO objetivo total (tons)</span>
         <input class="config-input" type="number" value="${v.hoObj}"
-          oninput="updateVessel(${activeIdx},'hoObj',this.value)">
+          onchange="updateVessel(${activeIdx},'hoObj',this.value)">
       </div>
       <div class="config-item">
         <span class="config-label">Stock inicial SFS (tons)</span>
         <input class="config-input" type="number" value="${v.sfsIni}"
-          oninput="updateVessel(${activeIdx},'sfsIni',this.value)">
+          onchange="updateVessel(${activeIdx},'sfsIni',this.value)">
       </div>
       <div class="config-item">
         <span class="config-label">Stock inicial HO (tons)</span>
         <input class="config-input" type="number" value="${v.hoIni}"
-          oninput="updateVessel(${activeIdx},'hoIni',this.value)">
+          onchange="updateVessel(${activeIdx},'hoIni',this.value)">
       </div>
       <div class="config-item">
         <span class="config-label">Puerto / Terminal</span>
         <input class="config-input" type="text" value="${v.puerto}"
-          oninput="updateVesselStr(${activeIdx},'puerto',this.value)">
+          onchange="updateVesselStr(${activeIdx},'puerto',this.value)">
       </div>
     </div>
   </div>
@@ -583,20 +885,20 @@ function renderMain(){
       <td>${r.label}${r.esETB?' ⚓':''}</td>
       <td>${chip}</td>
       <td><input class="inp-conf" type="number" min="0" value="${r.camSFS_conf||''}" placeholder="0"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'camSFS_conf',this.value)" ${dis}></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'camSFS_conf',this.value)" ${dis}></td>
       <td><input class="inp-conf" type="number" min="0" value="${r.camHO_conf||''}" placeholder="0"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'camHO_conf',this.value)" ${dis}></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'camHO_conf',this.value)" ${dis}></td>
       <td><input class="inp-proy" type="number" min="0" value="${r.camSFS_proy||''}" placeholder="0"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'camSFS_proy',this.value)" ${dis}></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'camSFS_proy',this.value)" ${dis}></td>
       <td><input class="inp-proy" type="number" min="0" value="${r.camHO_proy||''}" placeholder="0"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'camHO_proy',this.value)" ${dis}></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'camHO_proy',this.value)" ${dis}></td>
       <td class="${r.inTot>0?'in-v':''}">${fmtN(r.inTot)}</td>
       <td><input class="inp-out" type="number" min="0" value="${r.tonPorTurno!==v.tonPorTurno?r.tonPorTurno:''}" placeholder="${v.tonPorTurno}"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'tonPorTurno',this.value)" ${dis} title="Tons reales por turno este día"></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'tonPorTurno',this.value)" ${dis} title="Tons reales por turno este día"></td>
       <td><input class="inp-out" type="number" min="0" value="${r.outTurnos>0&&r.outTurnos!==-1?r.outTurnos:''}" placeholder="0"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'outTurnos',this.value)" ${dis}></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'outTurnos',this.value)" ${dis}></td>
       <td><input class="inp-out" type="number" min="0" value="${r.outReal||''}" placeholder="calc"
-        onkeydown="event.stopPropagation();" oninput="upCupo(${vi},${di},'outReal',this.value)" ${dis} title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
+        onkeydown="event.stopPropagation();" onchange="upCupo(${vi},${di},'outReal',this.value)" ${dis} title="Tons embarcadas reales (sobreescribe el cálculo)"></td>
       <td>${fmt(r.sfsStk)}</td>
       <td>${fmt(r.hoStk)}</td>
       <td style="font-weight:500;">${fmt(r.stockTot)}</td>
@@ -632,7 +934,13 @@ function renderMain(){
   document.getElementById('vessel-detail').innerHTML=html;
 }
 
-function render(){ renderSidebar(); renderMain(); }
+function render(){
+  const main = document.querySelector('.main');
+  const scrollTop = main ? main.scrollTop : 0;
+  renderSidebar();
+  renderMain();
+  if(main) main.scrollTop = scrollTop;
+}
 
 // ── ACCIONES ──────────────────────────────────────────────────────────
 function upCupo(vi,di,field,val){
@@ -724,23 +1032,27 @@ if(!loadFromLocal()){ initDefault(); }
 render();
 setTimeout(()=>{ const t=document.getElementById('save-txt-hdr'); if(t&&!dirty)t.textContent='Guardado localmente'; },100);
 
-// Evitar que teclas numéricas hagan scroll cuando el foco está en un input
-document.addEventListener('keydown', function(e){
-  if(document.activeElement && 
-     (document.activeElement.tagName==='INPUT' || document.activeElement.tagName==='TEXTAREA')){
-    e.stopPropagation();
+// Bloquear scroll de página cuando el foco está en un input
+document.addEventListener('focusin', function(e){
+  if(e.target && (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')){
+    document.body.classList.add('input-active');
   }
-}, true);
-
-// Evitar scroll con teclas de flecha y espacio cuando hay un input activo
+});
+document.addEventListener('focusout', function(e){
+  if(e.target && (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')){
+    document.body.classList.remove('input-active');
+  }
+});
+// Capturar keydown en fase de captura y bloquear si hay input activo
 document.addEventListener('keydown', function(e){
-  const tag = document.activeElement && document.activeElement.tagName;
-  if(tag==='INPUT' || tag==='TEXTAREA'){
-    if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)){
-      e.stopPropagation();
-    }
+  const active = document.activeElement;
+  if(active && (active.tagName==='INPUT'||active.tagName==='TEXTAREA')){
+    e.stopImmediatePropagation();
+    // Prevenir scroll con teclas que lo causan
+    const scrollKeys=['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','PageUp','PageDown',' '];
+    if(scrollKeys.includes(e.key)) e.preventDefault();
   }
 }, true);
 </script>
-</body>
-</html>
+
+</body></html>
