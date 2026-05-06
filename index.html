@@ -173,7 +173,7 @@ tbody tr.row-total td{background:var(--surface2);color:var(--text);font-weight:5
     <span style="font-size:11px;color:var(--text3);" id="save-txt-hdr">Cargando...</span>
     <label class="btn btn-sm" style="cursor:pointer;">📂 Cargar<input type="file" accept=".json" onchange="loadState(event)" style="display:none;"></label>
     <button class="btn btn-sm" onclick="saveState()">💾 Backup</button>
-    <button class="btn btn-primary" id="btn-publish" onclick="publishToGitHub()">🌐 Publicar</button>
+    <button class="btn btn-primary" id="btn-publish" onclick="publishToGitHub()">📤 Exportar y publicar</button>
     <button class="btn btn-sm" style="border-color:var(--green-dim);color:var(--green);" onclick="openNewVessel()">+ Buque</button>
   </div>
 </header>
@@ -230,7 +230,6 @@ function dayLabel(dt){ return DOW[dt.getDay()]+' '+dt.getDate()+'/'+(dt.getMonth
 let vessels = [], activeIdx = null, dirty = false;
 
 // ── PERSISTENCIA ──────────────────────────────────────────────────────
-const GITHUB_TOKEN = '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';
 const GITHUB_REPO  = 'sovoilar/SUNFLOW-';
 const GITHUB_FILE  = 'index.html';
 const LS_KEY       = 'sunflow_state';
@@ -265,44 +264,39 @@ function loadFromLocal(){
 }
 
 async function publishToGitHub(){
-  const btn=document.getElementById('btn-publish');
-  btn.textContent='Publicando...'; btn.disabled=true;
   try{
-    // 1. Obtener SHA del archivo actual
-    const meta = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`,{
-      headers:{'Authorization':'token '+GITHUB_TOKEN,'Accept':'application/vnd.github.v3+json'}
-    });
-    const metaJson = await meta.json();
-    const sha = metaJson.sha;
-
-    // 2. Leer el HTML actual de la página y actualizar el estado embebido
-    const res = await fetch(window.location.href);
-    let currentHtml = await res.text();
-
-    // 3. Serializar estado actual
+    // Construir el nuevo initDefault con el estado actual
     const stateData = vessels.map(v=>({...v,etb:v.etb.toISOString(),cupos:v.cupos.map(c=>({...c,date:c.date.toISOString()}))}));
-    const stateJson = JSON.stringify(stateData);
-
-    // 4. Reemplazar el bloque initDefault con los datos actuales
     const newInitBlock = buildInitBlock(stateData);
-    const initRegex = /function initDefault\(\)\{[\s\S]*?vessels\.push\(v\);activeIdx=0;\s*\}/;
-    if(initRegex.test(currentHtml)){
-      currentHtml = currentHtml.replace(initRegex, newInitBlock);
-    }
 
-    // 5. Subir a GitHub
-    const content = btoa(unescape(encodeURIComponent(currentHtml)));
-    const push = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`,{
-      method:'PUT',
-      headers:{'Authorization':'token '+GITHUB_TOKEN,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-      body: JSON.stringify({message:'SUNFLOW update '+new Date().toISOString().slice(0,16),content,sha})
-    });
-    if(push.ok){ markClean(); alert('✅ Publicado correctamente en sovoilar.github.io/SUNFLOW-/'); }
-    else { throw new Error(await push.text()); }
+    // Tomar el HTML del documento actual en memoria (sin fetch)
+    const currentHtml = document.documentElement.outerHTML;
+    const initRegex = /function initDefault\(\)[\s\S]*?vessels\.push\(v\);activeIdx=0;\s*\}/;
+    const updatedHtml = currentHtml.replace(initRegex, newInitBlock);
+
+    // Descargar
+    const blob = new Blob([updatedHtml], {type:'text/html'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    markClean();
+    setTimeout(()=>{
+      alert('✅ index.html descargado.\n\nSubilo a GitHub:\ngithub.com/sovoilar/SUNFLOW-\n→ Add file → Upload files → Commit changes');
+    }, 300);
   }catch(err){
-    alert('❌ Error al publicar: '+err.message);
+    alert('Error al exportar: '+err.message);
   }
-  btn.textContent='🌐 Publicar'; btn.disabled=false;
+}
+
+function resetToken(){
+  if(confirm('¿Querés cambiar el GitHub Token?')){
+    localStorage.removeItem('sunflow_gh_token');
+    alert('Token borrado. La próxima vez que publiques te lo va a pedir de nuevo.');
+  }
 }
 
 function buildInitBlock(data){
